@@ -68,12 +68,12 @@ public class JpaMain {
 //            em.persist(member1);
 //            em.persist(member2);
             
-            // Dirty Checking by 영속성 컨텍스트
-            Member member = em.find(Member.class, 150L);
-            member.setName("AAA"); // 다른 코드 필요없이 commit 하면 내용이 변경된다. (Dirty Checking)
-            // commit 이 호출되면 em.flush()가 실행되어 update 쿼리를 만든다.
-            // 강제로 commit 보다 변경 감지를 일찍 실행하고 싶으면 em.flush()를 실행하면 된다.
-            // 쓰기 지연 : commit 시점에 DB로 쿼리가 날아간다.
+//            // Dirty Checking by 영속성 컨텍스트
+//            Member member = em.find(Member.class, 150L);
+//            member.setName("AAA"); // 다른 코드 필요없이 commit 하면 내용이 변경된다. (Dirty Checking)
+//            // commit 이 호출되면 em.flush()가 실행되어 update 쿼리를 만든다.
+//            // 강제로 commit 보다 변경 감지를 일찍 실행하고 싶으면 em.flush()를 실행하면 된다.
+//            // 쓰기 지연 : commit 시점에 DB로 쿼리가 날아간다.
             tx.commit();
         } catch (Exception e) {
             tx.rollback();
