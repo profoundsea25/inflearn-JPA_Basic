@@ -18,6 +18,56 @@ public class JpaMain {
         tx.begin();
 
         try {
+
+            // 저장
+            Team team = new Team();
+            team.setName("TeamA");
+            em.persist(team);
+
+            Member member = new Member();
+            member.setUsername("member1");
+            member.setTeam(team);
+            em.persist(member);
+            // 연관관계 주인인 쪽에서 값을 넣어줘야 DB에 들어간다.
+            // Team 테이블에서는 Member가 읽기 전용이기 때문에 team.setMember(member)를 써도 DB에 안 들어감.
+            // insert 쿼리는 날라가지만 DB에 저장되지는 않음.
+            // 그러나 (양방향 매핑 시) 순수한 객체 관계를 고려하면 항상 양쪽 다 값을 입력해야 한다.
+//            team.getMembers().add(member);
+            // 추천하는 방법 : Class 에서 연관관계 편의 메서드 (setter 비슷하게)를 생성
+            // 위의 예시에서는 setTeam를 편집해서 연관관계 편의 메서드로 만든다.
+            // Team이든 Member든 한쪽에서만 set해주자.
+            // 단방향 매핑으로 끝내자. 1:다 에서 '다' 쪽에 매핑을 쫙 해놓고, 필요할 때 양방향 매핑을 쓰자.
+            // 연관관계 주인은 외래 키의 위치를 기준으로 정해야 한다.
+
+//            // 영속성 컨텍스트 말고 쿼리 나가는 것을 보고 싶다면?
+//            em.flush();
+//            em.clear();
+
+            Member findMember = em.find(Member.class, member.getId());
+            List<Member> members = findMember.getTeam().getMembers(); // 양방향 연관관계에 의해 서로 조인이 가능
+            // 객체는 단방향 매핑이 더 낫다.
+
+            for (Member m : members) {
+                System.out.println("m = " + m.getUsername());
+            }
+
+
+//            // 저장
+//            Team team = new Team();
+//            team.setName("TeamA");
+//            em.persist(team);
+//
+//            Member member = new Member();
+//            member.setUsername("member1");
+//            member.setTeamId(team.getId()); // 객체 지향스럽지 않다...
+//            em.persist(member);
+//
+//            // 객체 지향스럽지 않은 조회방법
+//            Member findMember = em.find(Member.class, member.getId());
+//            Long findTeamId = findMember.getTeamId();
+//            Team findTeam = em.find(Team.class, findTeamId);
+
+
 //            // 저장하기
 //            Member member = new Member();
 //            member.setId(1L);

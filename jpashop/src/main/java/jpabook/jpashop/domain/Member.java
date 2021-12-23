@@ -1,9 +1,8 @@
 package jpabook.jpashop.domain;
 
-import javax.persistence.Column;
-import javax.persistence.Entity;
-import javax.persistence.GeneratedValue;
-import javax.persistence.Id;
+import javax.persistence.*;
+import java.util.ArrayList;
+import java.util.List;
 
 @Entity
 public class Member {
@@ -15,6 +14,11 @@ public class Member {
     private String city;
     private String street;
     private String zipcode;
+
+    @OneToMany(mappedBy = "member")
+    private List<Order> orders = new ArrayList<>();
+    // 실무에서는 member로 orderList를 찾는 것이 별로 좋지 않다고 한다.
+    // 이미 기본 매핑(단방향 매핑)으로 Order에서 memberId로 조회가 가능하기 때문
 
     public Long getId() {
         return id;
