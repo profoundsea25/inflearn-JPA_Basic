@@ -1,7 +1,9 @@
 package hellojpa;
 
 import javax.persistence.*;
+import java.util.ArrayList;
 import java.util.Date;
+import java.util.List;
 
 @Entity // 꼭 넣어야 JPA라고 인식함. DB 테이블과 매핑
 // Table(name = "MBR") // 이렇게 쓰면 이 클래스를 테이블로 만들 때 MBR로 인식
@@ -22,6 +24,17 @@ public class Member {
     private Team team;
     // 다:1 관계를 가지는 쪽은 주인으로 지정해라.
     // 일단 쿼리가 나가는 것에 대해 헷갈리지 않을 수 있으며, 성능 우위가 있다.
+
+    @OneToOne
+    @JoinColumn(name = "LOCKER_ID")
+    private Locker locker;
+
+//    @ManyToMany
+//    @JoinTable(name = "MEMBER_PRODUCT")
+//    private List<Product> products = new ArrayList<>();
+
+    @OneToMany(mappedBy = "member")
+    private List<MemberProduct> memberProducts = new ArrayList<>();
 
     public Long getId() {
         return id;
