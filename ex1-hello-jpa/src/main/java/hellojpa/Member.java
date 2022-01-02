@@ -1,13 +1,14 @@
 package hellojpa;
 
 import javax.persistence.*;
+import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 
 @Entity // 꼭 넣어야 JPA라고 인식함. DB 테이블과 매핑
 // Table(name = "MBR") // 이렇게 쓰면 이 클래스를 테이블로 만들 때 MBR로 인식
-public class Member {
+public class Member extends BaseEntity {
 
     @Id @GeneratedValue
     @Column(name = "MEMBER_ID")
