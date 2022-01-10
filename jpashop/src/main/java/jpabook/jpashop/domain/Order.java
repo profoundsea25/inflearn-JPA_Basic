@@ -25,18 +25,17 @@ public class Order extends BaseEntity {
     // 가급적이면 설계할 때는 단방향으로 만들고, 코딩할 때 필요하면 양방향으로 추가해라.
     // 외래키가 있는 다대일 쪽이 연관관계의 주인이다! (실제로 ManyToOne에는 mappedBy 속성이 없다.)
 
-    @OneToOne
+    @OneToOne(fetch = FetchType.LAZY, cascade = CascadeType.ALL)
     @JoinColumn(name = "DELIVERY_ID")
     private Delivery delivery;
+
+    @OneToMany(mappedBy = "order", cascade = CascadeType.ALL)
+    private List<OrderItem> orderItems = new ArrayList<>();
 
     private LocalDateTime orderDate;
 
     @Enumerated(EnumType.STRING)
     private OrderStatus status;
-
-    @OneToMany(mappedBy = "order")
-    private List<OrderItem> orderItems = new ArrayList<>();
-
 
     public Long getId() {
         return id;

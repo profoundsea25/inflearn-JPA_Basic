@@ -26,7 +26,7 @@ public class Member extends BaseEntity {
     // 다:1 관계를 가지는 쪽은 주인으로 지정해라.
     // 일단 쿼리가 나가는 것에 대해 헷갈리지 않을 수 있으며, 성능 우위가 있다.
 
-    @OneToOne
+    @OneToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "LOCKER_ID")
     private Locker locker;
 
