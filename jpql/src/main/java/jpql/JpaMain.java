@@ -111,6 +111,23 @@ public class JpaMain {
                     .getResultList(); // NULL 반환
 
 
+            // 경로 표현식
+            // 상태 필드 : 경로 탐색 끝, 탐색 X (m.username)
+            String query12 = "select m.username From Member m";
+
+            // 단일 값 연관 경로 : 묵시적 내부 조인(inner join) 발생, 탐색 O (m.team 에서 . 찍고 더 탐색 가능)
+            // 묵시적 내부 조인이 편해 보이지만 쿼리(성능) 튜닝이 어렵다. join 은 조심히 사용해야 한다.
+            // 작성한 쿼리에서는 join을 쓰지 않았는데, 실제로는 join 쿼리가 나간다!
+            String query13 = "select m.team From Member m";
+
+            // 컬렉션 값 연관 경로 : 묵시적 내부 조인 발생, 단일 값 연관경로와 다르게 탐색 불가능
+            // (컬렉션이라서 어떤 member 를 탐색해야 할지 정해지지 않았기 때문)
+            String query14 = "select t.members From Team t";
+            String query14_ = "select t.members.username From Team t"; // 잘못된 쿼리. t.member.username 조회 불가능
+            // 탐색을 하고 싶으면 from 절에서 명시적 조인을 통해 별칭을 얻으면 별칭으로 탐색 가능
+            String query15 = "select m.username From Team t join t.members m";
+
+           // 조언 : 묵시적 조인쓰지 말고 명시적 조인을 써라. 묵시적 조인은 성능 튜닝이 어렵기 때문!
 
             tx.commit();
         } catch (Exception e) {
