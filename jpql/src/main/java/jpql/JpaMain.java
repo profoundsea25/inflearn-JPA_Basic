@@ -16,16 +16,28 @@ public class JpaMain {
 
         try {
 
-            Team team = new Team();
-            team.setName("teamA");
-            em.persist(team);
+            Team teamA = new Team();
+            teamA.setName("teamA");
+            em.persist(teamA);
 
-            Member member = new Member();
-            member.setUsername("member1");
-            member.setAge(10);
-            member.setTeam(team);
-            member.setType(MemberType.ADMIN);
-            em.persist(member);
+            Team teamB = new Team();
+            teamB.setName("teamB");
+            em.persist(teamB);
+
+            Member member1 = new Member();
+            member1.setUsername("member1");
+            member1.setTeam(teamA);
+            em.persist(member1);
+
+            Member member2 = new Member();
+            member2.setUsername("member1");
+            member2.setTeam(teamA);
+            em.persist(member2);
+
+            Member member3 = new Member();
+            member3.setUsername("member1");
+            member3.setTeam(teamB);
+            em.persist(member3);
 
             // 반환 타입이 명확하면 TypedQuery
             TypedQuery<Member> typedQuery = em.createQuery("select m from Member m", Member.class);
@@ -128,6 +140,22 @@ public class JpaMain {
             String query15 = "select m.username From Team t join t.members m";
 
            // 조언 : 묵시적 조인쓰지 말고 명시적 조인을 써라. 묵시적 조인은 성능 튜닝이 어렵기 때문!
+
+
+            // Fetch Join (즉시 로딩과 비슷)
+            // 지연로딩을 설정해도, 페치 조인이 우선이기 때문에 즉시 로딩된다.
+            String query16 = "select m from Member m join fetch m.team";
+            List<Member> result16 = em.createQuery(query16, Member.class)
+                    .getResultList(); // NULL 반환
+            // query16은 아래의 sql과 같다
+            String query17 = "select m.*, t.* from Member m inner join team t on m.team_id=t.id";
+
+            // 컬렉션 페치 조인
+            String query18 = "select t from Team t join fetch t.members where t.name = 'teamA'";
+            // 아래 sql과 같음
+            String query19 = "select t.*, m.* from Team t inner join member m on t.id = m.team_id where t.name = 'teamA'";
+
+
 
             tx.commit();
         } catch (Exception e) {
