@@ -156,6 +156,42 @@ public class JpaMain {
             String query19 = "select t.*, m.* from Team t inner join member m on t.id = m.team_id where t.name = 'teamA'";
 
 
+            // 엔티티 직접 사용
+            // 기본 키 값 사용
+            // 엔티티를 파라미터로 전달
+            String query20 = "select m from Member m where m = :member";
+            List<Member> result20 = em.createQuery(query20, Member.class).setParameter("member", member).getResultList();
+
+            // 식별자를 파라미터로 전달
+            String query21 = "select m from Member m where m.id = :memberId";
+            List<Member> resultList21 = em.createQuery(query21, Member.class).setParameter("memberId", memberId).getResultList();
+
+            // 외래 키 값 사용
+            Team team = em.find(Team.class, 1L);
+
+            // 엔티티를 파라미터로 전달
+            String query22 = "select m from Member m where m.team = :team";
+            List<Member> resultList22 = em.createQuery(query22, Member.class).setParameter("team", team).getResultList();
+
+            // 식별자를 파라미터로 전달
+            String query23 = "select m from Member m where m.team.id = :teamId";
+            List<Member> resultList23 = em.createQuery(query23, Member.class).setParameter("teamId", teamId).getResultList();
+
+
+            // NamedQuery
+            List<Member> resultList24 = em.createNamedQuery("Member.findByUsername", Member.class)
+                    .setParameter("username", "member1")
+                    .getResultList();
+
+
+            // 벌크 연산 (한 번에 여러 값 수정)
+            // 업데이트한 수 출력
+            // 벌크 연산 수행시 flush() 자동 수행
+            int resultCount = em.createQuery("update Member m set m.age = 20")
+                    .executeUpdate();
+
+            // 영속성 컨텍스트를 초기화 해줘야 벌크 연산이 반영된 데이터를 가져옴
+           em.clear();
 
             tx.commit();
         } catch (Exception e) {
